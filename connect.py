@@ -1,5 +1,6 @@
 import mysql.connector
 import random
+from colorama import Fore
 
 def display():
     print("----- User Deatils -----")
@@ -33,9 +34,21 @@ def insertion():
                  INSERT INTO bank(username,address,adhar,mobile,pinC,cvvC,pinD,cvvD,balance)
                  VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
                  """,(username,address,adhar,phone,pinC,cvvC,pinD,cvvD,balance))
-print("Data entered successfully")
+    print("Data Entered Successfully")
 
-def update(ch,username):
+def deletion(username):
+    sql_delete_query = '''
+        Delete from bank WHERE username = %s
+    '''
+    print("Confirm username deletion by entering the same username again")
+    deleted_username = (input(),username)
+    mycursor.execute(sql_delete_query,deleted_username)
+    mydb.commit()
+    print(mycursor.rowcount, "record(s) deleted")
+    
+
+def update(ch,username,balance):
+    
     if ch == 1:
         sql_update_query = """
 			Update bank set address = %s WHERE username = %s
@@ -44,7 +57,6 @@ def update(ch,username):
         new_address = (input(),username)
         mycursor.execute(sql_update_query,new_address)
         mydb.commit()
-        
     
     elif ch == 2:
         sql_update_query = """
@@ -74,14 +86,22 @@ def update(ch,username):
         if che == '+':
             print("Enter a valid amount")
             amount = int(input())
-            balance = balance+amount
-            mydb.commit()
+            if(amount<0):
+                print("Amount cannot be negative")
+            else:
+                balance = balance+amount
+                mycursor.execute(balance,balance)
+                mydb.commit()
         
         if che == '-':
             print("Enter the amount you want to withdraw")
-    
-    
-		
+            amount = int(input())
+            if amount>balance:
+                print("Insufficient balance")
+            else:
+                balance = balance-amount
+                mycursor.execute(balance,balance)
+                mydb.commit()
 
 mydb = mysql.connector.connect(
 	host = "localhost",
@@ -96,14 +116,19 @@ mycursor.execute("USE Banker")
 #mycursor.execute("CREATE TABLE bank (username VARCHAR(20),address VARCHAR(20), adhar INT,mobile VARCHAR(20),pinC INT,cvvC INT,pinD INT,cvvD INT)")
 #mycursor.execute("SHOW TABLES")
 #mycursor.execute("ALTER TABLE bank MODIFY COLUMN username VARCHAR(20) PRIMARY KEY")
+#mycursor.execute("ALTER TABLE bank ADD COLUMN Balance INT")
+
+#-------------Main Program---------------#
 
 #-------CREATING USER ACCOUNT-------#
 print("---------- Banking Application ----------")
 print("---------- Registration Form ----------")
 choice = 0
+balance = 0
 print("Select 1 to Register")         # This step is insertion
 print("Select 2 for updation") 		  # This step is an updation
 print("Select 3 for display of informaton")		#Display
+print("Select 4 to close the account")    #Deletion
 
 
 while(True):
@@ -125,11 +150,17 @@ while(True):
         ch = int(input())
         print("Enter ur username")
         username = input()
-        update(ch,username)
+        update(ch,username,balance)
 
     elif(choice == 3):
          display()
-       
+    
+    elif(choice == 4):
+        print("Deletion of record")
+        print("Enter the username to be deleted")
+        username = input()
+        deletion(username)
+    
     else:
         exit(0)
 
