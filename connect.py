@@ -37,13 +37,13 @@ def insertion():
     print("Data Entered Successfully")
 
 def deletion(username):
+    user = (username,)
     sql_delete_query = '''
         Delete from bank WHERE username = %s
     '''
-    print("Confirm username deletion by entering the same username again")
-    deleted_username = (input(),username)
-    mycursor.execute(sql_delete_query,deleted_username)
+    mycursor.execute(sql_delete_query,user)
     mydb.commit()
+    print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
     
 
