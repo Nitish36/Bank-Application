@@ -45,7 +45,8 @@ def deletion(username):
     mydb.commit()
     print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
-    
+
+   
 
 def update(ch,username,balance):
     
@@ -90,7 +91,6 @@ def update(ch,username,balance):
                 print("Amount cannot be negative")
             else:
                 balance = balance+amount
-                mycursor.execute(balance,balance)
                 mydb.commit()
         
         if che == '-':
@@ -100,8 +100,10 @@ def update(ch,username,balance):
                 print("Insufficient balance")
             else:
                 balance = balance-amount
-                mycursor.execute(balance,balance)
                 mydb.commit()
+        
+            
+    
 
 mydb = mysql.connector.connect(
 	host = "localhost",
@@ -125,6 +127,7 @@ print("---------- Banking Application ----------")
 print("---------- Registration Form ----------")
 choice = 0
 balance = 0
+final_balance=0
 print("Select 1 to Register")         # This step is insertion
 print("Select 2 for updation") 		  # This step is an updation
 print("Select 3 for display of informaton")		#Display
@@ -160,6 +163,7 @@ while(True):
         print("Enter the username to be deleted")
         username = input()
         deletion(username)
+        
     
     else:
         exit(0)
