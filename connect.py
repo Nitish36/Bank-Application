@@ -48,7 +48,7 @@ def deletion(username):
 
    
 
-def update(ch,username,balance):
+def update(ch,username):
     
     if ch == 1:
         sql_update_query = """
@@ -81,28 +81,13 @@ def update(ch,username,balance):
         mydb.commit()
     
     elif ch == 4:
-        print("Press + to deposit")
-        print("Press - to withdrw")
-        che = input()
-        if che == '+':
-            print("Enter a valid amount")
-            amount = int(input())
-            if(amount<0):
-                print("Amount cannot be negative")
-            else:
-                balance = balance+amount
-                mydb.commit()
-        
-        if che == '-':
-            print("Enter the amount you want to withdraw")
-            amount = int(input())
-            if amount>balance:
-                print("Insufficient balance")
-            else:
-                balance = balance-amount
-                mydb.commit()
-        
-            
+       sql_update_query = """
+              Update bank set pinC = %s WHERE username = %s
+       """
+       print("Enter a 4 digit pin")
+       new_pinC = (input(),username)
+       mycursor.execute(sql_update_query,new_pinC)
+       mydb.commit()
     
 
 mydb = mysql.connector.connect(
@@ -147,13 +132,13 @@ while(True):
         print("Enter 1 to update address")
         print("Enter 2 to update adhar")
         print("Enter 3 to update phone number")
-        print("Enter 4 to update ur balance amount")
+        print("Enter 4 to change credit card pin number")
         ch = 0
         print("Enter ur choice")
         ch = int(input())
         print("Enter ur username")
         username = input()
-        update(ch,username,balance)
+        update(ch,username)
 
     elif(choice == 3):
          display()
