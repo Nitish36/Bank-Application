@@ -82,7 +82,38 @@ def delete_beneficiaries(username):
     print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
     print("\n")
-       
+
+def transfer_funds(from_user,to_user,amount):
+    sql_retrieve_query = """
+            SELECT Balance FROM bank WHERE username = %s
+        """
+    mycursor.execute(sql_retrieve_query,(from_user,))
+    from_balance = mycursor.fetchone()[0]
+    print("Balance successfully retrieved!!!")
+    
+    mycursor.execute(sql_retrieve_query,(to_user,))
+    to_balance = mycursor.fetchone()[0]
+    print("Balance successfully retrieved!!!")
+    
+    if from_balance < amount:
+        print("Insufficient amount to transfer")
+        return
+    
+    from_updated_balance = from_balance - amount
+    to_updated_balance = to_balance + amount
+    
+    sql_update_query = """
+                Update bank set Balance = %s WHERE username = %s
+            """
+    mycursor.execute(sql_update_query,(from_updated_balance,from_username))
+    mydb.commit()
+    print("Balance updated successfully!!!")
+    
+    mycursor.execute(sql_update_query,(to_updated_balance,to_username))
+    mydb.commit()
+    print("Balance updated successfully!!!")
+    
+    mydb.commit()
 
 def update(ch,username):
     
@@ -238,6 +269,7 @@ print("Select 4 to close the account")    #Deletion
 print("Select 5 to insert beneficiaries")
 print("Select 6 to display beneficiaries")
 print("Select 7 to delete beneficiaries")
+print("Select 8 to transfer funds between people which are registered inthe database")
 
 while(True):
     print("Enter a choice")
@@ -287,9 +319,12 @@ while(True):
         delete_beneficiaries(username)
     
     elif(choice == 8):
-        print("Enter the username whose balance amount must be retrieved and updated")
-        username = input()
-        update(ch,username)
+        print("Enter the from username and to username to transfer the balance amount")
+        from_username = input()
+        to_username = input()
+        print("Enter the amount to be transferred")
+        amount = int(input())
+        transfer_funds(from_username,to_username,amount)
     
     else:
         exit(0)
