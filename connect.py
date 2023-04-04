@@ -46,7 +46,7 @@ def insertion():
                  VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
                  """,(username,address,adhar,phone,pinC,cvvC,pinD,cvvD,balance))
     print("Data Entered Successfully")
-
+    return balance
 
 def insert_beneficiaries():
     print("Enter the username whose beneficiaries have to be added")
@@ -77,8 +77,7 @@ def delete_beneficiaries(username):
     mydb.commit()
     print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
-
-   
+       
 
 def update(ch,username):
     
@@ -116,17 +115,83 @@ def update(ch,username):
        sql_update_query = """
               Update bank set pinC = %s WHERE username = %s
        """
-       print("Enter a 4 digit pin")
-       new_pinC = (input(),username)
+       new_pinC = (random.randrange(1000,9999),username)
        mycursor.execute(sql_update_query,new_pinC)
        mydb.commit()
        
+    elif ch == 5:
+       sql_update_query = """
+              Update bank set cvvC = %s WHERE username = %s
+       """
+       new_cvvC = (random.randrange(100,999),username)
+       mycursor.execute(sql_update_query,new_cvvC)
+       mydb.commit()
+       
+    elif ch == 6:
+       sql_update_query = """
+              Update bank set pinD = %s WHERE username = %s
+       """
+       new_pinD = (random.randrange(1000,9999),username)
+       mycursor.execute(sql_update_query,new_pinD)
+       mydb.commit()
     
-
+    elif ch == 7:
+       sql_update_query = """
+              Update bank set cvvD = %s WHERE username = %s
+       """
+       new_cvvD = (random.randrange(100,999),username)
+       mycursor.execute(sql_update_query,new_cvvD)
+       mydb.commit()
+    
+    elif ch == 8:
+        sql_retrieve_query = """
+            SELECT Balance FROM bank WHERE username = %s
+        """
+        mycursor.execute(sql_retrieve_query,(username,))
+        balance = mycursor.fetchone()[0]
+        updated_balance = 0
+        print("Balance successfully retrieved!!!")
+        print("Press + to credit to the bank")
+        print("Press - to debit from the bank")
+        print("Make a choice")
+        c = input()
+        if c == "+":
+            print("Enter a valid amount")
+            amount = float(input())
+            if(amount<0):
+                print("Enter a valid non negative amount")
+            else:
+                updated_balance = balance + amount
+            
+            sql_update_query = """
+                Update bank set Balance = %s WHERE username = %s
+            """
+            mycursor.execute(sql_update_query,(updated_balance,username))
+            mydb.commit()
+            print("Balance updated successfully!!!")
+        
+        if c == "-":
+            print("Enter a valid amount")
+            amount = float(input())
+            if(amount<0):
+                print("Enter a valid non negative amount")
+            
+            elif(amount>balance):
+                print("Insufficient balance!!")
+            else:
+                updated_balance = balance - amount
+            
+            sql_update_query = """
+                Update bank set Balance = %s WHERE username = %s
+            """
+            mycursor.execute(sql_update_query,(updated_balance,username))
+            mydb.commit()
+            print("Balance updated successfully!!!")
+            
 mydb = mysql.connector.connect(
 	host = "localhost",
 	user = "root",
-	password = ""
+	password = "$Freeman007$"
 	)
  
 mycursor = mydb.cursor()
@@ -161,7 +226,6 @@ while(True):
     if(choice == 1):
         insertion()
         mydb.commit()
-        
     elif(choice == 2):
         print("Updation of info")
         print("Select any of the choices to update ur info and enter the ur username also ")
@@ -169,6 +233,10 @@ while(True):
         print("Enter 2 to update adhar")
         print("Enter 3 to update phone number")
         print("Enter 4 to change credit card pin number")
+        print("Enter 5 to change cvv of credit card")
+        print("Enter 6 to change debit card pin number")
+        print("Enter 7 to change cvv of credit card")
+        print("Enter 8 to update balance")
         ch = 0
         print("Enter ur choice")
         ch = int(input())
@@ -198,7 +266,11 @@ while(True):
         print("Enter the username to be deleted")
         username = input()
         delete_beneficiaries(username)
-        
+    
+    elif(choice == 8):
+        print("Enter the username whose balance amount must be retrieved and updated")
+        username = input()
+        update(ch,username)
     
     else:
         exit(0)
