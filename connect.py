@@ -8,12 +8,14 @@ def display():
     myresult = mycursor.fetchall()
     for x in myresult:
         print(x)
+    print("\n")
 def display_beneficiaries():
     print("----- User Deatils -----")
     mycursor.execute("SELECT * FROM benefits")
     myresult = mycursor.fetchall()
     for x in myresult:
         print(x)
+    print("\n")
 
 def insertion():
     pinC = random.randrange(1000,9999)      # pin and cvv is randomly generated for each user
@@ -45,8 +47,8 @@ def insertion():
                  INSERT INTO bank(username,address,adhar,mobile,pinC,cvvC,pinD,cvvD,balance)
                  VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
                  """,(username,address,adhar,phone,pinC,cvvC,pinD,cvvD,balance))
-    print("Data Entered Successfully")
-    return balance
+    print("Data Entered Successfully!!!")
+    print("\n")
 
 def insert_beneficiaries():
     print("Enter the username whose beneficiaries have to be added")
@@ -56,7 +58,8 @@ def insert_beneficiaries():
     mycursor.execute("""
         INSERT INTO benefits(username,beneficiaries) VALUES(%s,%s)
     """,(username,beneficiaries))
-    print("Insertion Done successfully")
+    print("Insertion Done successfully!!!")
+    print("\n")
 
 def deletion(username):
     user = (username,)
@@ -67,6 +70,7 @@ def deletion(username):
     mydb.commit()
     print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
+    print("\n")
 
 def delete_beneficiaries(username):
     user = (username,)
@@ -77,6 +81,7 @@ def delete_beneficiaries(username):
     mydb.commit()
     print("Record Successfully deleted...")
     print(mycursor.rowcount, "record(s) deleted")
+    print("\n")
        
 
 def update(ch,username):
@@ -89,6 +94,8 @@ def update(ch,username):
         new_address = (input(),username)
         mycursor.execute(sql_update_query,new_address)
         mydb.commit()
+        print("Address updated successfully!!!")
+        print("\n")
     
     elif ch == 2:
         sql_update_query = """
@@ -98,6 +105,8 @@ def update(ch,username):
         new_adhar = (input(),username)
         mycursor.execute(sql_update_query,new_adhar)
         mydb.commit()
+        print("Adhar updated successfully!!!")
+        print("\n")
         
     elif ch == 3:
         sql_update_query = """
@@ -110,6 +119,8 @@ def update(ch,username):
             
         mycursor.execute(sql_update_query,new_phone)
         mydb.commit()
+        print("phone number updated successfully!!!")
+        print("\n")
     
     elif ch == 4:
        sql_update_query = """
@@ -118,6 +129,8 @@ def update(ch,username):
        new_pinC = (random.randrange(1000,9999),username)
        mycursor.execute(sql_update_query,new_pinC)
        mydb.commit()
+       print("pin updated successfully!!!")
+       print("\n")
        
     elif ch == 5:
        sql_update_query = """
@@ -126,6 +139,8 @@ def update(ch,username):
        new_cvvC = (random.randrange(100,999),username)
        mycursor.execute(sql_update_query,new_cvvC)
        mydb.commit()
+       print("cvvC updated successfully!!!")
+       print("\n")
        
     elif ch == 6:
        sql_update_query = """
@@ -134,6 +149,8 @@ def update(ch,username):
        new_pinD = (random.randrange(1000,9999),username)
        mycursor.execute(sql_update_query,new_pinD)
        mydb.commit()
+       print("pin updated successfully!!!")
+       print("\n")
     
     elif ch == 7:
        sql_update_query = """
@@ -142,7 +159,8 @@ def update(ch,username):
        new_cvvD = (random.randrange(100,999),username)
        mycursor.execute(sql_update_query,new_cvvD)
        mydb.commit()
-    
+       print("cvvD updated successfully!!!")
+       print("\n")
     elif ch == 8:
         sql_retrieve_query = """
             SELECT Balance FROM bank WHERE username = %s
@@ -187,6 +205,7 @@ def update(ch,username):
             mycursor.execute(sql_update_query,(updated_balance,username))
             mydb.commit()
             print("Balance updated successfully!!!")
+        print("\n")
             
 mydb = mysql.connector.connect(
 	host = "localhost",
